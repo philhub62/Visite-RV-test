@@ -225,12 +225,12 @@ async function exportPDF(){
    }
    else if(el.matches('.report-pics')){
     const imgs=await Promise.all([...el.querySelectorAll('img')].map(node=>drawImage(node.src)));
-    const valid=imgs.filter(Boolean),cols=Math.min(3,valid.length),gap=10,available=usable;
+    const valid=imgs.filter(Boolean),cols=3,gap=8,photoLeft=34,available=W-photoLeft*2;
     const slot=(available-gap*2)/3;
     for(let i=0;i<valid.length;i+=cols){
-     const batch=valid.slice(i,i+cols);const dimensions=batch.map(im=>{let scale=Math.min(slot/im.width,360/im.height);return [im.width*scale,im.height*scale]});
+     const batch=valid.slice(i,i+cols);const dimensions=batch.map(im=>{let scale=Math.min(slot/im.width,480/im.height);return [im.width*scale,im.height*scale]});
      const rowH=Math.max(...dimensions.map(d=>d[1]));ensure(rowH+18);
-     batch.forEach((im,j)=>{const [w,h]=dimensions[j];ctx.drawImage(im,leftMargin+j*(slot+gap),y,w,h)});
+     batch.forEach((im,j)=>{const [w,h]=dimensions[j];ctx.drawImage(im,photoLeft+j*(slot+gap),y,w,h)});
      y+=rowH+18;
     }
    }
