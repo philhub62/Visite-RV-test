@@ -130,13 +130,22 @@ function reportBody(){
     for(const item of items){
      const arr=current.data[key(i,title+' / '+item)]||[];
      const content=noteAndPhotos(arr);
-     if(content)groupOut+=`<h4>${E(item)}</h4>`+content;
+     if(content){
+      const filled=arr.filter(o=>(o.note||'').trim());
+      groupOut+=filled.map(o=>`<div class="report-field">${E(item)} : ${E(o.note.trim())}</div>`).join('');
+      const photos=arr.flatMap(o=>o.photos||[]);
+      if(photos.length)groupOut+=photoMarkup(photos);
+     }
     }
     if(!(i===2&&title==='Groupe inventaire'))groupOut+=noteAndPhotos(current.data[key(i,'__admin_group__'+title)]||[]);
    }else{
-    groupOut+=noteAndPhotos(current.data[key(i,title)]||[]);
+    const arr=current.data[key(i,title)]||[];
+    const filled=arr.filter(o=>(o.note||'').trim());
+    groupOut+=filled.map(o=>`<div class="report-field">${E(title)} : ${E(o.note.trim())}</div>`).join('');
+    const photos=arr.flatMap(o=>o.photos||[]);
+    if(photos.length)groupOut+=photoMarkup(photos);
    }
-   if(groupOut)sectionOut+=`<h3>${E(title)}</h3>`+groupOut;
+   if(groupOut)sectionOut+=(Array.isArray(items)?`<h3>${E(title)}</h3>`:'')+groupOut;
   }
   sectionOut+=noteAndPhotos(current.data[key(i,'__general__')]||[]);
   if(sectionOut)out+=`<h2>${i+1}. ${E(s.name)}</h2>`+sectionOut;
@@ -169,8 +178,12 @@ async function exportPDF(){
    else if(el.matches('h2')){gap(52);line(el.textContent,28,true,'#2563a6');gap(9)}
    else if(el.matches('h3')){gap(10);line(el.textContent,24,true,'#687789',38);gap(5)}
    else if(el.matches('h4')){gap(7);line(el.textContent,23,true,'#515e6d',76);gap(3)}
+   else if(el.matches('.report-field')){
+    for(const part of el.textContent.split('\n'))line(part,23,false,'#111',76);
+    gap(6);
+   }
    else if(el.matches('p,.report-note')){
-    const text=el.innerText.replace(/^Remarques\s*:\s*/i,'');
+    const text=el.textContent.replace(/^Remarques\s*:\s*/i,'');
     for(const part of text.split('\n'))line(part,23,false,'#111',el.matches('.report-note')?76:0);
     gap(7);
    }
