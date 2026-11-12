@@ -119,18 +119,29 @@ function dataToBlob(data){let [head,body]=data.split(','),type=(head.match(/data
 function exportName(ext){let d=(current.date||'').split('-');return `Visite_RV_Mag_${(current.number||'sans_numero').replace(/[^a-zA-Z0-9_-]/g,'_')}_${d[2]||'00'}_${d[1]||'00'}_${d[0]||'0000'}.${ext}`}
 function photoMarkup(photos){let html='';for(let j=0;j<photos.length;j+=3){let part=photos.slice(j,j+3);html+=`<table class="report-pics"><tr>${Array.from({length:3},(_,slot)=>`<td>${part[slot]?`<img src="${part[slot].data}" alt="Photo">`:''}</td>`).join('')}</tr></table>`}return html}
 function noteAndPhotos(arr){let out='';for(let o of arr){let photos=o.photos||[],note=(o.note||'').trim();if(!note&&!photos.length)continue;out+='<div class="report-ob">';if(note)out+=`<div class="report-note"><b>Remarques :</b> ${E(note).replace(/\n/g,'<br>')}</div>`;if(photos.length)out+=photoMarkup(photos);out+='</div>'}return out}
-function reportBody(){let d=(current.date||'').split('-');let date=d.length===3?`${d[2]}/${d[1]}/${d[0]}`:E(current.date||'—');let out=`<h1 style="color:#2563a6;text-align:center;font-weight:bold;font-size:12pt;white-space:nowrap;line-height:1.1;margin:0 0 28px">Visite RV du magasin n° ${E(current.number||'—')} le ${date}</h1><p><b>Nom du magasin :</b> ${E(current.store)}<br><b>Nom du RS :</b> ${E(current.rs)}</p>`;
-SC.forEach((s,i)=>{let sectionOut='';if(s.groups.some(g=>Array.isArray(g[1]))){
- for(let [title,items] of s.groups){let block='';for(let item of items){let arr=current.data[key(i,title+' / '+item)]||[];for(let o of arr){let note=(o.note||'').trim();if(note)block+=`<div class="report-note">${items.length===1&&item===title?'':`<b>${E(item)} :</b> `}${E(note).replace(/\n/g,'<br>')}</div>`;}}
- if(!(i===2&&title==='Groupe inventaire'))block+=noteAndPhotos(current.data[key(i,'__admin_group__'+title)]||[]);
- if(block)sectionOut+=`<h3>${E(title)}</h3>`+block;
- }
- }else{
- for(let k of flatten(i)){let arr=current.data[key(i,k.k)]||[];let notes=arr.map(o=>(o.note||'').trim()).filter(Boolean);if(notes.length)sectionOut+=`<h3>${E(k.label||s.name)}</h3>`+notes.map(n=>`<div class="report-note">${E(n).replace(/\n/g,'<br>')}</div>`).join('')}
- sectionOut+=noteAndPhotos(current.data[key(i,'__general__')]||[]);
- }
- if(sectionOut)out+=`<h2>${i+1}. ${E(s.name)}</h2>`+sectionOut;
-});return out}
+function reportBody(){
+ let d=(current.date||'').split('-');let date=d.length===3?`${d[2]}/${d[1]}/${d[0]}`:E(current.date||'—');
+ let out=`<h1>Visite RV du magasin n° ${E(current.number||'—')} le ${date}</h1><p><b>Nom du magasin :</b> ${E(current.store)}<br><b>Nom du RS :</b> ${E(current.rs)}</p>`;
+ SC.forEach((s,i)=>{
+  let sectionOut='';
+  for(const group of s.groups){
+   const title=group[0],items=group[1];let groupOut='';
+   if(Array.isArray(items)){
+    for(const item of items){
+     const arr=current.data[key(i,title+' / '+item)]||[];
+     const content=noteAndPhotos(arr);
+     if(content)groupOut+=`<h4>${E(item)}</h4>`+content;
+    }
+    if(!(i===2&&title==='Groupe inventaire'))groupOut+=noteAndPhotos(current.data[key(i,'__admin_group__'+title)]||[]);
+   }else{
+    groupOut+=noteAndPhotos(current.data[key(i,title)]||[]);
+   }
+   if(groupOut)sectionOut+=`<h3>${E(title)}</h3>`+groupOut;
+  }
+  sectionOut+=noteAndPhotos(current.data[key(i,'__general__')]||[]);
+  if(sectionOut)out+=`<h2>${i+1}. ${E(s.name)}</h2>`+sectionOut;
+ });return out;
+}
 
 
 // Export PDF autonome : pages A4 rendues localement puis intégrées dans un PDF.
@@ -153,21 +164,29 @@ async function exportPDF(){
   async function drawImage(src){return new Promise(resolve=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>resolve(null);img.src=src})}
   page();
   const root=document.createElement('div');root.style.cssText='position:fixed;left:-99999px;top:0;width:700px;visibility:hidden';root.innerHTML=reportBody();document.body.appendChild(root);
-  for(const el of root.children){
+  async function renderElement(el){
    if(el.matches('h1')){line(el.textContent,28,true,'#2563a6');gap(52)}
-   else if(el.matches('h2')){gap(52);line(el.textContent,28,true,'#2563a6');gap(8)}
-   else if(el.matches('h3')){gap(8);line(el.textContent,24,true,'#687789',38);gap(4)}
-   else if(el.matches('p,.report-note')){for(const part of el.innerText.split('\n'))line(part,23,false,'#111',el.matches('.report-note')?76:0);gap(5)}
-   else if(el.matches('.report-ob')){
-    for(const child of el.children){
-     if(child.matches('.report-note,.report-photo-title')){for(const part of child.innerText.split('\n'))line(part,23,false,'#111',76);gap(18)}
-     else if(child.matches('table')){
-      const imgs=[...child.querySelectorAll('img')];const height=235;if(y+height>H-margin)page();
-      for(let i=0;i<imgs.length;i++){let im=await drawImage(imgs[i].src);if(!im)continue;let boxW=(usable-16)/3,scale=Math.min(boxW/im.width,220/im.height),dw=im.width*scale,dh=im.height*scale;ctx.drawImage(im,leftMargin+i*(boxW+8)+(boxW-dw)/2,y,dw,dh)}y+=height;
-     }
-    }
+   else if(el.matches('h2')){gap(52);line(el.textContent,28,true,'#2563a6');gap(9)}
+   else if(el.matches('h3')){gap(10);line(el.textContent,24,true,'#687789',38);gap(5)}
+   else if(el.matches('h4')){gap(7);line(el.textContent,23,true,'#515e6d',76);gap(3)}
+   else if(el.matches('p,.report-note')){
+    const text=el.innerText.replace(/^Remarques\s*:\s*/i,'');
+    for(const part of text.split('\n'))line(part,23,false,'#111',el.matches('.report-note')?76:0);
+    gap(7);
    }
+   else if(el.matches('table')){
+    const imgs=[...el.querySelectorAll('img')];const height=235;
+    if(y+height>H-margin)page();
+    for(let i=0;i<imgs.length;i++){
+     let im=await drawImage(imgs[i].src);if(!im)continue;
+     let boxW=(usable-76-16)/3,scale=Math.min(boxW/im.width,220/im.height),dw=im.width*scale,dh=im.height*scale;
+     ctx.drawImage(im,leftMargin+76+i*(boxW+8)+(boxW-dw)/2,y,dw,dh);
+    }
+    y+=height;
+   }
+   else {for(const child of el.children)await renderElement(child)}
   }
+  for(const el of root.children)await renderElement(el);
   root.remove();
   // Each page is a JPEG image inside a standards-compliant PDF container.
   const enc=new TextEncoder(),parts=[],offsets=[0];let length=0;
