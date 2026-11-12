@@ -148,17 +148,17 @@ function reportBody(){
      if(flat){
       // Reuse the original data key so existing visits and responses remain intact.
       const legacy=current.data[key(i,group+' / '+items[0])]||[];
-      groupBody+=content(legacy,group+' : ','report-inline');
+      groupBody+=content(legacy,i===10&&group==='Affichage fluo / vert'?'affichage fluo / vert':group,i===10?'report-subfield':'report-inline');
      }else{
       for(const item of items)groupBody+=content(current.data[key(i,group+' / '+item)]||[],item,'report-subfield');
       groupBody+=content(current.data[key(i,'__admin_group__'+group)]||[],'__remarks__','report-remark');
      }
     }else{
      // The subsection heading already carries the label; don't repeat it on the response line.
-     groupBody+=content(current.data[key(i,group)]||[],'','report-group-value');
+     groupBody+=content(current.data[key(i,group)]||[],[8,9,11,12].includes(i)?group:'',[8,9,11,12].includes(i)?'report-subfield':'report-group-value');
     }
     const flat=(i===2&&group==='Groupe inventaire')||(i===10&&(group==='Contrôle des prix FDR (sondage)'||group==='Affichage fluo / vert'));
-    if(groupBody)body+=(flat?'':`<h3>${E(group)}</h3>`)+groupBody;
+    if(groupBody)body+=((flat||[8,9,11,12].includes(i))?'':`<h3>${E(group)}</h3>`)+groupBody;
    }
   }
   const generalContent=content(current.data[key(i,'__general__')]||[],[0,13,14].includes(i)?'':'__remarks__',[0,13,14].includes(i)?'report-plain':'report-remark');
