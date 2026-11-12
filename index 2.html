@@ -1,0 +1,272 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#2563a6"><meta name="apple-mobile-web-app-capable" content="yes"><title>Visite RV</title><link rel="manifest" href="manifest.webmanifest"><style>
+:root{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#182538;background:#f4f6fa}*{box-sizing:border-box}body{margin:0}main{max-width:740px;margin:auto;padding:18px 14px 95px}h1{color:#2563a6;text-align:center;font-size:30px;margin:18px 0}h1.visit-heading{font-size:17px;line-height:1.2;margin:8px 0 9px;font-weight:750}h2{color:#2563a6;font-size:22px;margin:6px 0 16px}h3{color:#626e7d;font-size:17px;margin:0}.card{background:white;border-radius:16px;padding:18px;margin:12px 0;box-shadow:0 2px 14px #142b4710}.row{display:flex;gap:10px;align-items:center}.row>*{min-width:0}.spread{justify-content:space-between}label{display:block;font-weight:650;font-size:14px;margin:12px 0 6px}input,textarea,select{font:inherit;width:100%;border:1px solid #cbd3dd;border-radius:9px;padding:12px;background:#fff;color:#182538}textarea{min-height:80px;resize:vertical}button,.button{font:inherit;border:0;border-radius:10px;background:#2563a6;color:white;padding:12px 15px;font-weight:650;cursor:pointer;display:inline-block;text-align:center}button.secondary{background:#e8edf4;color:#20354c}button.danger{background:#fce8e8;color:#9d2525}button:disabled{opacity:.4}button.small{padding:7px 10px;font-size:13px}.wide{width:100%}.muted{color:#687789;font-size:13px}.tabs{display:flex;gap:7px;overflow-x:auto;padding:5px 0 12px}.tabs button{white-space:nowrap;background:#e8edf4;color:#20354c;font-size:13px}.tabs button.active{background:#2563a6;color:#fff}.menu-float{position:fixed;right:18px;bottom:18px;z-index:20;box-shadow:0 3px 14px #0003}.menu-panel{position:fixed;right:12px;bottom:77px;max-height:70vh;overflow:auto;width:min(370px,calc(100vw - 24px));z-index:20;background:white;border:1px solid #cbd3dd;border-radius:14px;padding:12px;box-shadow:0 5px 35px #0004}.menu-panel button{display:block;width:100%;text-align:left;margin:4px 0;background:#eef3f9;color:#20354c}.sub-field{margin:15px 0 19px}.sub-title{font-size:16px;color:#34495f;margin:0 0 8px}.sub-field textarea{display:block;min-height:43px;height:43px;padding:9px 12px;resize:vertical}.general-area{border-top:2px solid #e2e8f0;margin-top:25px;padding-top:15px}.general-area h3{color:#2563a6}.relex-group{border-top:1px solid #dce3ec;padding:12px 0 20px}.relex-group h3{color:#33475c;font-size:18px;margin:10px 0}.observation{border:1px solid #dce3ec;border-radius:12px;padding:12px;margin:12px 0}.photos{display:flex;flex-wrap:wrap;gap:9px}.photo{width:100px;position:relative}.photo img{width:100px;height:100px;object-fit:cover;border-radius:9px}.photo button{padding:4px 6px;font-size:12px}.filebutton{position:relative;overflow:hidden;display:inline-block;background:#e8edf4;color:#20354c;border-radius:10px;padding:10px 12px;font-weight:650;font-size:14px}.filebutton input{position:absolute;inset:0;opacity:0;cursor:pointer}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.bottom{display:flex;gap:10px;margin:22px 0}.bottom button{flex:1}.visit{border:1px solid #dce3ec;border-radius:12px;padding:12px;margin:10px 0}.pill{background:#edf2f8;color:#34506c;padding:4px 9px;border-radius:99px;font-size:12px}#notice{position:fixed;bottom:10px;left:10px;right:10px;max-width:720px;margin:auto;background:#21364d;color:white;padding:10px;border-radius:9px;display:none;z-index:9}.hidden{display:none!important}@media print{body{background:white}main,.menu-float,.menu-panel{display:none!important}#printRoot{display:block!important}#printRoot{font-family:Arial,sans-serif;font-size:11pt;color:#111}#printRoot h1{color:#2563a6;text-align:center;margin:0;line-height:1.15}#printRoot p{margin:0;line-height:1.15}#printRoot .report-photo-title{margin:0}#printRoot h2{color:#2563a6;font-size:15pt;break-after:avoid;margin:0;line-height:1.15}#printRoot h3{color:#6d7783;font-size:12pt;break-after:avoid;margin:0;line-height:1.15}#printRoot .report-ob{margin:0;break-inside:avoid}#printRoot .report-note{white-space:pre-wrap;margin:0;line-height:1.15}#printRoot .report-pics{width:100%;table-layout:fixed;border-collapse:separate;border-spacing:0;break-inside:avoid}#printRoot .report-pics td{width:33.333%;vertical-align:top}#printRoot .report-pics img{display:block;width:100%;height:175px;object-fit:cover;break-inside:avoid}}
+</style></head><body><main id="app"></main><div id="printRoot" class="hidden"></div><div id="notice"></div><script>
+'use strict';const MAGASINS={"4":{"store":"FLIXECOURT","rs":"Mickaël Faburé"},"11":{"store":"DENAIN","rs":"Jérôme Gallet"},"14":{"store":"WALLERS","rs":"Jérôme Gallet"},"18":{"store":"AUBENCHEUL AU BAC","rs":"Patrick Deak"},"22":{"store":"COURCELLES LES LENS","rs":"Mickaël Faburé"},"24":{"store":"LIBERCOURT","rs":"Mickaël Martin"},"29":{"store":"CAMBRAI","rs":"Patrick Deak"},"32":{"store":"FENAIN","rs":"Jérôme Gallet"},"34":{"store":"LALLAING","rs":"Jérôme Gallet"},"35":{"store":"AVESNES LES AUBERT","rs":"Patrick Deak"},"44":{"store":"SAINT AMAND LES EAUX","rs":"Mickaël Martin"},"46":{"store":"WAZIERS","rs":"Mickaël Martin"},"47":{"store":"ANICHE","rs":"Jérôme Gallet"},"53":{"store":"BREBIERES","rs":"Mickaël Faburé"},"57":{"store":"SALOUEL","rs":"Perrine Dehame"},"61":{"store":"DOUAI","rs":"Mickaël Faburé"},"67":{"store":"SIN LE NOBLE","rs":"Patrick Deak"},"79":{"store":"CAMBRAI 2","rs":"Patrick Deak"},"80":{"store":"RACHES","rs":"Mickaël Martin"},"84":{"store":"ORCHIES","rs":"Mickaël Martin"},"88":{"store":"VIGNACOURT","rs":"Perrine Dehame"},"89":{"store":"DREUIL LES AMIENS","rs":"Perrine Dehame"},"92":{"store":"HAULCHIN","rs":"Jérôme Gallet"},"93":{"store":"DOUAI","rs":"Mickaël Faburé"},"96":{"store":"DOULLENS","rs":"Mickaël Faburé"},"98":{"store":"VILLERS BOCAGE","rs":"Perrine Dehame"},"100":{"store":"HENIN BEAUMONT","rs":"Mickaël Martin"},"101":{"store":"AMIENS MARIVAUX","rs":"Perrine Dehame"},"111":{"store":"PROVILLE","rs":"Patrick Deak"}};const SC=[
+{name:'Extérieur',groups:[]},
+{name:'Administratif',groups:[['Suivi CA / VHP',['Étalon','Plan','Réel']],['Kélio S-1',['Nombre d’anomalies']],['Planning horaire',['Signature RS','Cohérence']]]},
+{name:'Plan d’action inventaire',groups:[['Groupe inventaire',['Groupe inventaire']],['Respect des procédures MDM',['Contrôle sac / achat','Observation caisse','Test PLU','État de la réserve','Contrôle des procédures du MDM par le RS']],['Respect des procédures RS',['Observation caisse RS','Contrôle caisse RS','Test PLU RS','Contrôle cabine','Test camion','Contrôle tard','Contrôle tôt','Test achat']]]},
+{name:'Suivi RELEX',groups:[['Côté bureau',['Traitement des listes RELEX','Réalisation des tours manquants','Contrôle des stocks négatifs','Contrôle des stocks Fresco','Contrôle des stocks VVP']],['Côté magasin',['Capacité rayon au max','Fiabilité des stocks','Niveau de remplissage des rayons']]]},
+{name:'Zone caisse',groups:[['Passage caisse',['Attente zone de caisse','Employé / caisse / attente','Utilisation coffre de caisse']],['Extra-présentation',['Absence de marque nationale','Volume','Balisage A5']],['Étagère de caisse',['Plan','Volume','Balisage','Présence des cartes cadeau']],['Bac de tri',['Bac de tri']],['Distributeur de tracts',['Tract présent ?','Respect de la règle ?']]]},
+{name:'Fruits et légumes',groups:[['Fraîcheur'],['Qualité du rayon'],['Niveau de remplissage']]},
+{name:'Bake-off',groups:[['Rayon',['Présentation','Balisage','Propreté']],['Laboratoire pain',['Respect du PMS','Propreté','Plan de cuisson']]]},
+{name:"AA'S",groups:[["AA’s en magasin",['Fiabilité des prix','Niveau de remplissage','Respect du thème','Présentation générale']],["AA’s en réserve",['3 emplacements outils AA’s','Stockage AA’s thématisé']]]},
+{name:'Bon plan',groups:[['Fiabilité des prix'],['Niveau de remplissage'],['Présentation']]},
+{name:'Présentation / Propreté',groups:[['Qualité de la mise en rayon'],['Qualité du tour carton'],['Propreté générale']]},
+{name:'Balisage fond de rayon',groups:[['Contrôle des prix FDR (sondage)',['Contrôle des prix FDR (sondage)']],['Affichage fluo / vert',['Affichage fluo / vert']]]},
+{name:'Contrôle fraîcheur',groups:[['DLC'],['Qualité des emballages'],['Refresh']]},
+{name:'Cash Management',groups:[['Gestion des utilisateurs'],['Lecture des messages'],['Contrôle coffre RV'],['Clé du baby coffre sécurisée ?']]},
+{name:'Divers',groups:[['']]},
+{name:'Conclusion',groups:[['']]}];
+const $=s=>document.querySelector(s),E=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));const key=(a,b)=>a+'|'+(a===3?b.replace(/^Côté bureau(?= \/|$)/,'Côté administratif'):a===4?b.replace('Employé / caisse / attente','Employé / caisse'):b);let db,visits=[],current=null,section=0,sub='',screen='list',saveTimer,menuOpen=false;const uid=()=>crypto.randomUUID?crypto.randomUUID():Date.now()+'-'+Math.random();function notice(t){let n=$('#notice');n.textContent=t;n.style.display='block';setTimeout(()=>n.style.display='none',3000)}
+function openDB(){return new Promise((ok,no)=>{let q=indexedDB.open('visite-rv',1);q.onupgradeneeded=()=>q.result.createObjectStore('visits',{keyPath:'id'});q.onsuccess=()=>ok(q.result);q.onerror=()=>no(q.error)})}function all(){return new Promise((ok,no)=>{let q=db.transaction('visits').objectStore('visits').getAll();q.onsuccess=()=>ok(q.result);q.onerror=()=>no(q.error)})}function put(v){return new Promise((ok,no)=>{let q=db.transaction('visits','readwrite').objectStore('visits').put(v);q.onsuccess=ok;q.onerror=()=>no(q.error)})}function del(id){return new Promise((ok,no)=>{let q=db.transaction('visits','readwrite').objectStore('visits').delete(id);q.onsuccess=ok;q.onerror=()=>no(q.error)})}async function save(){if(!current)return;current.updated=Date.now();try{await put(current);visits=await all()}catch(e){notice('Stockage saturé ou indisponible : exporte une sauvegarde !')}}function schedule(){clearTimeout(saveTimer);saveTimer=setTimeout(save,250)}function newVisit(){current={schemaVersion:15,id:uid(),date:new Date().toISOString().slice(0,10),number:'',store:'',rs:'',status:'En cours',data:{},created:Date.now()};section=0;sub='';screen='start';render()}
+// Migration une seule fois : conserver les données indexées de la version 11 rubriques.
+function migrateVisit(v){if(!v||!v.data||v.schemaVersion>=15)return false;
+ const relexThird=Object.keys(v.data).some(k=>/^2\|/.test(k)&&/RELEX|Fresco|VVP|stocks négatifs|tours manquants/.test(k));
+ const oldToNew=relexThird?{0:0,1:1,2:3,3:5,4:6,5:7,6:8,7:11,8:12,9:13,10:14}:{0:0,1:1,2:5,3:6,4:7,5:8,6:11,7:3,8:12,9:13,10:14};
+ const moved={};for(const [k,value] of Object.entries(v.data)){
+  const m=k.match(/^(\d+)\|(.*)$/);if(m&&oldToNew[+m[1]]!==undefined)moved[oldToNew[+m[1]]+'|'+m[2]]=value;
+  else moved[k]=value;
+ }
+ v.data=moved;v.schemaVersion=15;return true;
+}
+function migrateRelex(){if(section!==3||current.data['3|__relex_migrated_v15'])return;
+ const pairs=[['Traitement des listes RELEX','Traitement des listes RELEX'],['Réalisation des tours manquants','Réalisation des tours manquants'],['Contrôle des stocks négatifs','Contrôle des stocks négatifs'],['Contrôle des stocks Fresco','Contrôle des stocks Fresco'],['Contrôle stock VVP','Contrôle des stocks VVP']];
+ for(const [oldLabel,newLabel] of pairs){const old=current.data[key(3,oldLabel)]||[];const destKey=key(3,'Côté administratif / '+newLabel);if(old.length&&!current.data[destKey])current.data[destKey]=old.map(o=>({...o,photos:[]}));}
+ const allPhotos=pairs.flatMap(([oldLabel])=>(current.data[key(3,oldLabel)]||[]).flatMap(o=>o.photos||[]));
+ const oldGeneral=current.data[key(3,'__general__')]||[];
+ const notes=oldGeneral.filter(o=>(o.note||'').trim()||(o.photos||[]).length).map(o=>({...o,photos:[...(o.photos||[])]}));
+ if(allPhotos.length){if(notes.length)notes[0].photos.push(...allPhotos);else notes.push({id:uid(),note:'',photos:allPhotos});}
+ if(notes.length&&!current.data[key(3,'__admin_group__Côté administratif')])current.data[key(3,'__admin_group__Côté administratif')]=notes;
+ current.data['3|__relex_migrated_v15']=true;schedule();
+}
+function sectionKeys(i){let r=[];SC[i].groups.forEach(g=>{if(g[1])g[1].forEach(s=>r.push([g[0],s]));else r.push([g[0],''])});return r}function getObs(i,s){let k=key(i,s);return current.data[k]||(current.data[k]=[])}function activeKey(){return sub||sectionKeys(section)[0].join(' / ')}function flatten(i){return sectionKeys(i).map(([a,b])=>({label:b?`${a} / ${b}`:a,k:b?`${a} / ${b}`:a}))}function enter(i){section=i;sub=flatten(i)[0]?.k||'';screen='edit';render();window.scrollTo(0,0);document.documentElement.scrollTop=0;document.body.scrollTop=0}
+function render(){const a=$('#app');document.querySelectorAll('.menu-float,.menu-panel').forEach(e=>e.remove());if(screen==='list'){a.innerHTML=`<h1>Visite RV</h1><div class="card"><button class="wide" id="new">+ Nouvelle visite</button><div class="toolbar"><button class="secondary small" id="backup">Exporter une sauvegarde</button><label class="filebutton">Importer une sauvegarde<input id="restore" type="file" accept="application/json,.json"></label></div><p class="muted">Les visites sont conservées localement sur cet appareil. Pense à exporter régulièrement une sauvegarde.</p></div><div class="card"><h2>Mes visites</h2>${visits.sort((x,y)=>(y.updated||y.created)-(x.updated||x.created)).map(v=>`<div class="visit"><div class="row spread"><b>${E(v.number||'Sans numéro')} · ${E(v.store||'Magasin sans nom')}</b><span class="pill">${E(v.status)}</span></div><p class="muted">${E(v.date)} · ${E(v.rs||'RS non renseigné')}</p><div class="toolbar"><button class="small" data-open="${E(v.id)}">Ouvrir</button><button class="secondary small" data-export="${E(v.id)}">Exporter</button><button class="danger small" data-delete="${E(v.id)}">Supprimer</button></div></div>`).join('')||'<p class="muted">Aucune visite enregistrée.</p>'}</div>`;$('#new').onclick=newVisit;$('#backup').onclick=backup;$('#restore').onchange=restore;a.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>{current=visits.find(v=>v.id===b.dataset.open);current.data||={};screen='start';render()});a.querySelectorAll('[data-export]').forEach(b=>b.onclick=()=>{current=visits.find(v=>v.id===b.dataset.export);screen='export';render()});a.querySelectorAll('[data-delete]').forEach(b=>b.onclick=async()=>{if(confirm('Supprimer définitivement cette visite ?')){await del(b.dataset.delete);visits=await all();for(const v of visits){if(migrateVisit(v))await put(v)}render()}});return}
+if(screen==='start'){a.innerHTML=`<div class="card"><h1>Visite RV</h1><label>Numéro du magasin</label><input id="number" value="${E(current.number)}"><label>Nom du magasin</label><input id="store" value="${E(current.store)}"><label>Nom du RS</label><input id="rs" value="${E(current.rs)}"><label>Date de la visite</label><input id="date" type="date" value="${E(current.date)}"><div class="bottom"><button class="secondary" id="home">Mes visites</button><button id="begin">Commencer la visite</button></div></div>`;['number','store','rs','date'].forEach(k=>$('#'+k).oninput=e=>{
+current[k]=e.target.value;
+if(k==='number'){
+const found=MAGASINS[String(current.number).trim().replace(/^0+(?=\d)/,'')];
+if(found){current.store=found.store;current.rs=found.rs;$('#store').value=found.store;$('#rs').value=found.rs;}
+else{current.store='';current.rs='';$('#store').value='';$('#rs').value='';}
+}
+schedule()});$('#home').onclick=async()=>{await save();screen='list';render()};$('#begin').onclick=async()=>{await save();enter(0)};return}
+if(screen==='export'){a.innerHTML=`<div class="card"><h1>Visite RV</h1><h2>Exporter le rapport</h2><p><b>${E(current.number)} · ${E(current.store)}</b><br>${E(current.date)}</p><button class="wide" id="word">Document Word (.doc)</button><br><br><button class="wide secondary" id="pdf">Télécharger le rapport PDF</button><p class="muted">Le format Word fourni est un document HTML compatible avec Word (.doc), et non un fichier .docx natif. Le PDF est généré directement sur l’appareil. Sur iPhone, enregistre-le dans Fichiers depuis le menu de partage si nécessaire.</p><button class="secondary" id="back">Retour à la visite</button></div>`;$('#word').onclick=exportWord;$('#pdf').onclick=exportPDF;$('#back').onclick=()=>enter(section);return}
+// Administratif : chaque bloc a ses items, sa remarque et ses propres photos.
+if(SC[section].groups.some(g=>Array.isArray(g[1]))){renderGrouped();return}
+let keys=flatten(section);
+// Chaque sous-rubrique possède son propre champ texte; les photos et remarques générales sont communes à la rubrique.
+const generalKey='__general__';
+function firstNote(k){let arr=getObs(section,k);if(!arr.length){arr.push({id:uid(),note:'',photos:[]});schedule()}return arr[0]}
+keys.forEach(k=>firstNote(k.k));
+let general=getObs(section,generalKey);if(!general.length){general.push({id:uid(),note:'',photos:[]});schedule()}
+// Conserver et regrouper les anciennes photos des sous-rubriques dans la partie générale.
+let migrated=false;keys.forEach(k=>getObs(section,k.k).forEach(o=>{if(o.photos&&o.photos.length){general[0].photos.push(...o.photos);o.photos=[];migrated=true}}));if(migrated)schedule();
+const obs=general;
+const fields=keys.map(k=>`<div class="sub-field"><label class="sub-title" for="field-${E(k.k)}">${E(k.label||SC[section].name)}</label><textarea rows="1" data-subnote="${E(k.k)}" placeholder="Saisir une remarque…">${E(firstNote(k.k).note)}</textarea></div>`).join('');
+a.innerHTML=`<div class="row spread"><button class="secondary small" id="home">Mes visites</button><span class="pill">${section+1} / ${SC.length}</span><button class="secondary small" id="export">Exporter</button></div><h1 class="visit-heading">Visite RV mag ${E(current.number||'—')}</h1><div class="card"><h2>${section+1}. ${E(SC[section].name)}</h2>${section===SC.length-1?'':fields}<div class="general-area"><h3>Remarques et photos</h3><div id="obs">${obs.map((o,i)=>obHTML(o,i)).join('')}</div><button class="secondary wide" id="add">+ Ajouter des remarques et photos</button></div><div class="bottom"><button class="secondary" id="prev">Précédent</button><button id="next">${section===SC.length-1?'Terminer la visite':'Suivant'}</button></div></div>`;
+$('#home').onclick=async()=>{await save();screen='list';render()};$('#export').onclick=async()=>{await save();screen='export';render()};
+a.querySelectorAll('[data-subnote]').forEach(t=>t.oninput=()=>{firstNote(t.dataset.subnote).note=t.value;schedule()});
+$('#add').onclick=()=>{obs.push({id:uid(),note:'',photos:[]});schedule();render()};
+$('#prev').onclick=async()=>{await save();if(section===0){screen='start';render()}else enter(section-1)};
+$('#next').onclick=async()=>{await save();if(section===SC.length-1){current.status='Terminé';await save();screen='export';render()}else enter(section+1)};
+bindObs(obs);renderMenu()}
+
+function adminObs(group){let k='__admin_group__'+group;let arr=getObs(section,k);if(!arr.length){arr.push({id:uid(),note:'',photos:[]});schedule()}return arr}
+function renderGrouped(){
+migrateRelex();
+if(section===6&&!current.data['6|__bake_migrated_v2']){
+ const mapping=[['Respect du PMS','Laboratoire pain / Respect du PMS'],['Plan de cuisson','Laboratoire pain / Plan de cuisson'],['Qualité du rayon','Rayon / Présentation']];
+ mapping.forEach(([oldK,newK])=>{let old=current.data[key(6,oldK)]||[];let dest=getObs(6,newK);if(old.length&&!dest.length){dest.push(...old.map(o=>({...o,photos:[]})));let pics=old.flatMap(o=>o.photos||[]);if(pics.length){let general=getObs(6,'__admin_group__'+(newK.startsWith('Rayon')?'Rayon':'Laboratoire pain'));general.push({id:uid(),note:'',photos:pics})}}});
+ current.data['6|__bake_migrated_v2']=true;schedule();
+}
+// Préserver les anciennes données AA’s lors du changement de présentation.
+if(section===7&&!current.data['7|__aa_migrated_v3']){
+ const pairs=[
+  ['Magasin / Fiabilité des prix','AA’s en magasin / Fiabilité des prix'],
+  ['Magasin / Niveau de remplissage','AA’s en magasin / Niveau de remplissage'],
+  ['Magasin / Respect des thèmes','AA’s en magasin / Respect du thème'],
+  ['Magasin / Présentation générale','AA’s en magasin / Présentation générale'],
+  ['Réserve / Quatre dernières semaines','AA’s en réserve / 3 emplacements outils AA’s'],
+  ['Réserve / Cinq palettes AA thématisées','AA’s en réserve / Stockage AA’s thématisé']
+ ];
+ pairs.forEach(([oldK,newK])=>{let old=current.data[key(7,oldK)]||[];let dest=getObs(7,newK);if(old.length&&!dest.length){dest.push(...old.map(o=>({...o,photos:[]})));let pics=old.flatMap(o=>o.photos||[]);if(pics.length){let group=newK.startsWith('AA’s en magasin')?'AA’s en magasin':'AA’s en réserve';let target=getObs(7,'__admin_group__'+group);target.push({id:uid(),note:'',photos:pics})}}});
+ [['Magasin','AA’s en magasin'],['Réserve','AA’s en réserve']].forEach(([oldName,newName])=>{let old=current.data[key(7,'__admin_group__'+oldName)]||[];let target=getObs(7,'__admin_group__'+newName);if(old.length&&!target.length)target.push(...old)});
+ let oldGeneral=current.data[key(7,'__general__')]||[];
+ if(oldGeneral.length){let target=getObs(7,'__admin_group__AA’s en magasin');target.push(...oldGeneral.filter(o=>(o.note||'').trim()||(o.photos||[]).length))}
+ current.data['7|__aa_migrated_v3']=true;schedule();
+}
+const groups=SC[section].groups;
+let blocks=groups.map(([title,items],gi)=>{
+let fields=items.map(item=>{let k=title+' / '+item;let arr=getObs(section,k);if(!arr.length){arr.push({id:uid(),note:'',photos:[]});schedule()}return `<div class="sub-field"><label class="sub-title" ${items.length===1&&item===title?'style="display:none"':''}>${E(item)}</label><textarea rows="1" data-admin-item="${E(k)}" placeholder="Saisir…">${E(arr[0].note)}</textarea></div>`}).join('');
+let obs=section===2&&title==='Groupe inventaire'?[]:adminObs(title);return `<div class="relex-group" data-admin-group="${gi}"><h3>${E(title)}</h3>${fields}${section===2&&title==='Groupe inventaire'?'':`<div class="general-area"><div id="admin-obs-${gi}">${obs.map((o,j)=>obHTML(o,j)).join('')}</div><button class="secondary wide" data-admin-add="${gi}">+ Ajouter des remarques et photos</button></div>`}</div>`}).join('');
+$('#app').innerHTML=`<div class="row spread"><button class="secondary small" id="home">Mes visites</button><span class="pill">${section+1} / ${SC.length}</span><button class="secondary small" id="export">Exporter</button></div><h1 class="visit-heading">Visite RV mag ${E(current.number||'—')}</h1><div class="card"><h2>${section+1}. ${E(SC[section].name)}</h2>${blocks}<div class="bottom"><button class="secondary" id="prev">Précédent</button><button id="next">Suivant</button></div></div>`;
+$('#home').onclick=async()=>{await save();screen='list';render()};$('#export').onclick=async()=>{await save();screen='export';render()};
+document.querySelectorAll('[data-admin-item]').forEach(t=>t.oninput=()=>{getObs(section,t.dataset.adminItem)[0].note=t.value;schedule()});
+// Lier chaque groupe séparément pour conserver les photos dans le bon bloc.
+groups.forEach(([title],gi)=>{let root=document.querySelector(`[data-admin-group="${gi}"]`);if(section===2&&title==='Groupe inventaire')return;let obs=adminObs(title);bindObsIn(root,obs);root.querySelector('[data-admin-add]').onclick=()=>{obs.push({id:uid(),note:'',photos:[]});schedule();render()}});
+$('#prev').onclick=async()=>{await save();enter(section-1)};$('#next').onclick=async()=>{await save();enter(section+1)};renderMenu();
+}
+function bindObsIn(root,obs){
+root.querySelectorAll('[data-note]').forEach(t=>t.oninput=()=>{obs.find(o=>o.id===t.dataset.note).note=t.value;schedule()});
+root.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{let i=obs.findIndex(o=>o.id===b.dataset.remove);obs.splice(i,1);schedule();render()});
+root.querySelectorAll('[data-photo]').forEach(f=>f.onchange=async()=>{let o=obs.find(o=>o.id===f.dataset.photo);if(!o)return;for(let file of f.files){if(!file.type.startsWith('image/'))continue;try{o.photos.push({data:await shrink(file),name:file.name})}catch(e){notice('Impossible de lire cette photo')}}await save();render()});
+root.querySelectorAll('[data-photo-remove]').forEach(b=>b.onclick=()=>{let [id,j]=b.dataset.photoRemove.split(':');obs.find(o=>o.id===id).photos.splice(+j,1);schedule();render()});
+root.querySelectorAll('[data-save-photo]').forEach(b=>b.onclick=()=>{let [id,j]=b.dataset.savePhoto.split(':');download(dataToBlob(obs.find(o=>o.id===id).photos[+j].data),`Visite_RV_photo_${Date.now()}.jpg`)});
+root.querySelectorAll('[data-move]').forEach(b=>b.onclick=()=>{let [id,j,d]=b.dataset.move.split(':');let p=obs.find(o=>o.id===id).photos;[p[+j],p[+j+(+d)]]=[p[+j+(+d)],p[+j]];schedule();render()})}
+function obHTML(o,i){return `<div class="observation" data-oid="${E(o.id)}"><div class="row spread"><b>Remarques</b><button class="danger small" data-remove="${E(o.id)}">Supprimer</button></div><textarea rows="3" data-note="${E(o.id)}" placeholder="Saisir ou dicter une remarque…">${E(o.note)}</textarea><label>Photos</label><div class="photos">${(o.photos||[]).map((p,j)=>`<div class="photo"><img src="${p.data}" alt="Photo"><div class="row"><button class="secondary" data-move="${E(o.id)}:${j}:-1" ${j===0?'disabled':''}>←</button><button class="secondary" data-move="${E(o.id)}:${j}:1" ${j===o.photos.length-1?'disabled':''}>→</button><button class="danger" data-photo-remove="${E(o.id)}:${j}">×</button></div><button class="secondary small" data-save-photo="${E(o.id)}:${j}">Enregistrer dans Photos</button></div>`).join('')}</div><div class="toolbar"><label class="filebutton">📷 Appareil photo<input type="file" accept="image/*" capture="environment" data-photo="${E(o.id)}"></label><label class="filebutton">Photothèque<input type="file" accept="image/*" multiple data-photo="${E(o.id)}"></label></div></div>`}
+function renderMenu(){let b=document.createElement('button');b.className='menu-float';b.textContent='☰ Menu';b.onclick=()=>{menuOpen=!menuOpen;renderMenu()};document.body.append(b);if(menuOpen){let panel=document.createElement('div');panel.className='menu-panel';panel.innerHTML='<b>Aller à une rubrique</b>'+SC.map((x,i)=>`<button data-jump="${i}">${i+1}. ${E(x.name)}</button>`).join('');document.body.append(panel);panel.querySelectorAll('[data-jump]').forEach(x=>x.onclick=async()=>{await save();menuOpen=false;enter(+x.dataset.jump)})}}
+function bindObs(obs){document.querySelectorAll('[data-note]').forEach(t=>t.oninput=()=>{obs.find(o=>o.id===t.dataset.note).note=t.value;schedule()});document.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{let i=obs.findIndex(o=>o.id===b.dataset.remove);obs.splice(i,1);schedule();render()});document.querySelectorAll('[data-photo]').forEach(f=>f.onchange=async()=>{let o=obs.find(o=>o.id===f.dataset.photo);if(!o)return;for(let file of f.files){if(!file.type.startsWith('image/'))continue;try{o.photos.push({data:await shrink(file),name:file.name})}catch(e){notice('Impossible de lire cette photo')}}await save();render();notice('Photo ajoutée au rapport. Pour conserver une prise de vue dans Photos, vérifie son enregistrement dans la photothèque.');});document.querySelectorAll('[data-photo-remove]').forEach(b=>b.onclick=()=>{let [id,j]=b.dataset.photoRemove.split(':');obs.find(o=>o.id===id).photos.splice(+j,1);schedule();render()});document.querySelectorAll('[data-save-photo]').forEach(b=>b.onclick=()=>{let [id,j]=b.dataset.savePhoto.split(':');let p=obs.find(o=>o.id===id).photos[+j];download(dataToBlob(p.data),`Visite_RV_photo_${Date.now()}.jpg`);notice('Photo téléchargée : utilise Partager puis Enregistrer l’image si nécessaire.')});document.querySelectorAll('[data-move]').forEach(b=>b.onclick=()=>{let [id,j,d]=b.dataset.move.split(':');let p=obs.find(o=>o.id===id).photos;[p[+j],p[+j+(+d)]]=[p[+j+(+d)],p[+j]];schedule();render()})}
+function dataToBlob(data){let [head,body]=data.split(','),type=(head.match(/data:([^;]+)/)||[])[1]||'image/jpeg',raw=atob(body),bytes=new Uint8Array(raw.length);for(let i=0;i<raw.length;i++)bytes[i]=raw.charCodeAt(i);return new Blob([bytes],{type})}function shrink(file){return new Promise((ok,no)=>{let img=new Image(),url=URL.createObjectURL(file);img.onload=()=>{let scale=Math.min(1,1400/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);c.getContext('2d').drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);ok(c.toDataURL('image/jpeg',.76))};img.onerror=()=>{URL.revokeObjectURL(url);no()};img.src=url})}
+function exportName(ext){let d=(current.date||'').split('-');return `Visite_RV_Mag_${(current.number||'sans_numero').replace(/[^a-zA-Z0-9_-]/g,'_')}_${d[2]||'00'}_${d[1]||'00'}_${d[0]||'0000'}.${ext}`}
+function photoMarkup(photos){
+ if(!photos.length)return '';
+ return `<div class="report-pics">${photos.map(p=>`<img src="${p.data}" alt="Photo">`).join('')}</div>`;
+}
+function reportBody(){
+ let d=(current.date||'').split('-'),date=d.length===3?`${d[2]}/${d[1]}/${d[0]}`:E(current.date||'—');
+ let out=`<h1>Visite RV du magasin n° ${E(current.number||'—')} le ${date}</h1><p class="report-identity">Nom du magasin : ${E(current.store)}</p><p class="report-identity">Nom du RS : ${E(current.rs)}</p>`;
+ const filled=arr=>(arr||[]).filter(o=>String(o.note||'').trim()||(o.photos||[]).length);
+ function content(arr,label,kind){
+  let result='';for(const o of filled(arr)){
+   const note=String(o.note||'').trim(),photos=o.photos||[];
+   if(note){
+    const labelMarkup=label==='__remarks__'?'<b>Remarques :</b> ':label?`<u>${E(label)}</u> : `:'';
+    result+=`<div class="report-field ${kind}"><span class="report-label">${labelMarkup}</span><span class="report-value">${E(note).replace(/\n/g,'<br>')}</span></div>`;
+   }
+   if(photos.length)result+=photoMarkup(photos);
+  }return result;
+ }
+ SC.forEach((s,i)=>{
+  let body='';
+  if(i===0){
+   // Legacy Exterior text is preserved, but its obsolete subfield is no longer displayed.
+   body+=content(current.data[key(i,'')]||[],'','report-plain');
+  }else{
+   for(const [group,items] of s.groups){
+    let groupBody='';
+    if(Array.isArray(items)){
+     const flat=(i===2&&group==='Groupe inventaire')||(i===10&&(group==='Contrôle des prix FDR (sondage)'||group==='Affichage fluo / vert'));
+     if(flat){
+      // Reuse the original data key so existing visits and responses remain intact.
+      const legacy=current.data[key(i,group+' / '+items[0])]||[];
+      groupBody+=content(legacy,group+' : ','report-inline');
+     }else{
+      for(const item of items)groupBody+=content(current.data[key(i,group+' / '+item)]||[],item,'report-subfield');
+      groupBody+=content(current.data[key(i,'__admin_group__'+group)]||[],'__remarks__','report-remark');
+     }
+    }else{
+     // The subsection heading already carries the label; don't repeat it on the response line.
+     groupBody+=content(current.data[key(i,group)]||[],'','report-group-value');
+    }
+    const flat=(i===2&&group==='Groupe inventaire')||(i===10&&(group==='Contrôle des prix FDR (sondage)'||group==='Affichage fluo / vert'));
+    if(groupBody)body+=(flat?'':`<h3>${E(group)}</h3>`)+groupBody;
+   }
+  }
+  body+=content(current.data[key(i,'__general__')]||[],[0,13,14].includes(i)?'':'__remarks__',[0,13,14].includes(i)?'report-plain':'report-remark');
+  if(body)out+=`<h2>${E(s.name)}</h2>`+body;
+ });
+ out+='<p class="report-signature"><i>RV Philippe Czarnecki</i></p>';
+ return out;
+}
+
+// Export PDF autonome : pages A4 rendues localement puis intégrées dans un PDF.
+async function exportPDF(){
+ const btn=$('#pdf');if(btn){btn.disabled=true;btn.textContent='Création du PDF…'}
+ try{
+  await save();
+  const W=1240,H=1754,margin=74,leftMargin=112,rightMargin=74,usable=W-leftMargin-rightMargin;
+  let pages=[],canvas,ctx,y,lastWasSection=false;
+  function page(){canvas=document.createElement('canvas');canvas.width=W;canvas.height=H;ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);ctx.textBaseline='top';y=margin;pages.push(canvas)}
+  function font(size=23,bold=false,italic=false){ctx.font=`${italic?'italic ':''}${bold?'bold ':''}${size}px Arial, sans-serif`}
+  function wrap(text,maxWidth,size=23,bold=false){font(size,bold);let lines=[];for(const paragraph of String(text).split('\n')){let current='';for(const word of paragraph.split(/\s+/)){let candidate=current?current+' '+word:word;if(current&&ctx.measureText(candidate).width>maxWidth){lines.push(current);current=word}else current=candidate}lines.push(current)}return lines}
+  function ensure(height){if(y+height>H-margin){page();return true}return false}
+  function textLine(text,indent=0,size=23,bold=false,color='#111',italic=false,underline=false){
+   const width=usable-indent,lines=wrap(text,width,size,bold),lh=size*1.27;
+   for(const t of lines){ensure(lh);font(size,bold,italic);ctx.fillStyle=color;ctx.fillText(t,leftMargin+indent,y);if(underline&&t){const tw=ctx.measureText(t).width;ctx.fillRect(leftMargin+indent,y+size+2,tw,1.3)}y+=lh}
+  }
+  function field(label,value,indent,labelBold=false,labelUnderline=false){
+   const size=23,lh=size*1.27,maxW=usable-indent;
+   let raw=String(value||'').split('\n'),prefix=label||'';
+   for(let pi=0;pi<raw.length;pi++){
+    const words=raw[pi].split(/\s+/);let lineWords=[],first=true;
+    while(words.length){
+     const word=words.shift();const trial=[...lineWords,word].join(' ');
+     font(size,false);const valueW=ctx.measureText(trial).width;
+     font(size,labelBold);const prefixW=first&&pi===0?ctx.measureText(prefix).width:0;
+     if(lineWords.length&&prefixW+valueW>maxW){
+      ensure(lh);let x=leftMargin+indent;
+      if(first&&pi===0&&prefix){font(size,labelBold);ctx.fillStyle='#111';ctx.fillText(prefix,x,y);if(labelUnderline){ctx.fillRect(x,y+size+2,prefixW-ctx.measureText(' : ').width,1.3)}x+=prefixW}
+      font(size);ctx.fillText(lineWords.join(' '),x,y);y+=lh;first=false;lineWords=[word];
+     }else lineWords.push(word);
+    }
+    ensure(lh);let x=leftMargin+indent;
+    if(first&&pi===0&&prefix){font(size,labelBold);ctx.fillStyle='#111';ctx.fillText(prefix,x,y);if(labelUnderline){ctx.fillRect(x,y+size+2,Math.max(0,ctx.measureText(prefix).width-ctx.measureText(' : ').width),1.3)}x+=ctx.measureText(prefix).width}
+    font(size);ctx.fillStyle='#111';ctx.fillText(lineWords.join(' '),x,y);y+=lh;
+   }
+  }
+  async function drawImage(src){return new Promise(resolve=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=()=>resolve(null);img.src=src})}
+  page();
+  const root=document.createElement('div');root.style.cssText='position:fixed;left:-99999px;top:0;width:700px;visibility:hidden';root.innerHTML=reportBody();document.body.appendChild(root);
+  async function renderElement(el){
+   if(el.matches('h1')){let title=el.textContent;const lines=wrap(title,usable,28,true);ensure(lines.length*36+30);for(const t of lines){font(28,true);ctx.fillStyle='#2563a6';ctx.fillText(t,(W-ctx.measureText(t).width)/2,y);y+=36}y+=40}
+   else if(el.matches('h2')){
+    // Exactly two blank lines before every main heading, regardless of preceding content.
+    // At a fresh page, the top margin replaces the blank space.
+    const spacing=29;
+    if(y>margin){if(y+spacing+40>H-margin)page();else y+=spacing}
+    ensure(40);textLine(el.textContent,0,28,true,'#2563a6');y+=8;
+   }
+   else if(el.matches('h3')){ensure(40);textLine(el.textContent,38,24,true,'#687789')}
+   else if(el.matches('.report-field')){
+    const label=el.querySelector('.report-label')?.textContent||'',value=el.querySelector('.report-value')?.textContent||'';
+    const indent=el.matches('.report-subfield,.report-remark')?76:el.matches('.report-group-value,.report-inline')?38:76;
+    if(el.matches('.report-remark,.report-plain')){ensure(29);y+=29;}
+    field(label,value,indent,el.matches('.report-remark'),el.matches('.report-subfield'));
+    if(el.matches('.report-remark,.report-plain')){ensure(29);y+=29;}
+   }
+   else if(el.matches('.report-pics')){
+    const imgs=await Promise.all([...el.querySelectorAll('img')].map(node=>drawImage(node.src)));
+    const valid=imgs.filter(Boolean),cols=3,gap=8,photoLeft=66,available=W-photoLeft*2;
+    const slot=(available-gap*2)/3;
+    for(let i=0;i<valid.length;i+=cols){
+     const batch=valid.slice(i,i+cols);const dimensions=batch.map(im=>{let scale=Math.min(slot/im.width,420/im.height);return [im.width*scale,im.height*scale]});
+     const rowH=Math.max(...dimensions.map(d=>d[1]));ensure(rowH+18);
+     batch.forEach((im,j)=>{const [w,h]=dimensions[j];ctx.drawImage(im,photoLeft+j*(slot+gap),y,w,h)});
+     y+=rowH+18;
+    }
+   }
+   else if(el.matches('.report-signature')){ensure(70);y+=18;textLine('RV Philippe Czarnecki',0,23,false,'#111',true)}
+   else if(el.matches('p')){textLine(el.textContent);y+=8}
+   else {for(const child of el.children)await renderElement(child)}
+  }
+  for(const el of root.children)await renderElement(el);
+  root.remove();
+  // Each page is a JPEG image inside a standards-compliant PDF container.
+  const enc=new TextEncoder(),parts=[],offsets=[0];let length=0;
+  function add(bytes){parts.push(bytes);length+=bytes.length}
+  function str(t){add(enc.encode(t))}
+  function obj(id,header,stream){offsets[id]=length;str(`${id} 0 obj\n${header}`);if(stream){str('\nstream\n');add(stream);str('\nendstream')}str('\nendobj\n')}
+  str('%PDF-1.4\n');const count=2+pages.length*3;
+  obj(1,'<< /Type /Catalog /Pages 2 0 R >>');
+  const kids=pages.map((_,i)=>`${3+i*3} 0 R`).join(' ');
+  obj(2,`<< /Type /Pages /Kids [${kids}] /Count ${pages.length} >>`);
+  for(let i=0;i<pages.length;i++){
+   const pid=3+i*3,imgid=pid+1,contentid=pid+2;
+   obj(pid,`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /XObject << /Im${i} ${imgid} 0 R >> >> /Contents ${contentid} 0 R >>`);
+   const b64=pages[i].toDataURL('image/jpeg',.86).split(',')[1],binary=atob(b64),bytes=new Uint8Array(binary.length);for(let j=0;j<binary.length;j++)bytes[j]=binary.charCodeAt(j);
+   obj(imgid,`<< /Type /XObject /Subtype /Image /Width ${W} /Height ${H} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${bytes.length} >>`,bytes);
+   const cmd=enc.encode(`q\n595.28 0 0 841.89 0 0 cm\n/Im${i} Do\nQ\n`);
+   obj(contentid,`<< /Length ${cmd.length} >>`,cmd);
+  }
+  const start=length;str(`xref\n0 ${count+1}\n0000000000 65535 f \n`);for(let i=1;i<=count;i++)str(`${String(offsets[i]).padStart(10,'0')} 00000 n \n`);
+  str(`trailer\n<< /Size ${count+1} /Root 1 0 R >>\nstartxref\n${start}\n%%EOF`);
+  download(new Blob(parts,{type:'application/pdf'}),exportName('pdf'));notice('PDF créé : retrouve-le dans les téléchargements ou Fichiers.');
+ }catch(e){console.error(e);notice('Impossible de créer le PDF : '+(e.message||'erreur'))}
+ finally{if(btn){btn.disabled=false;btn.textContent='Télécharger le rapport PDF'}}
+}
+
+function buildPrint(){document.title=exportName('pdf').replace(/\.pdf$/,'');$('#printRoot').innerHTML=reportBody()}
+function download(blob,name){let url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),15000)}
+function exportWord(){let style=`<style>body{font-family:Arial,sans-serif;color:#111}h1,h2{color:#2563a6}h3{color:#777}h1,h2,h3,p{margin:0;line-height:1.15}h1[style*='font-size:12pt']{font-size:12pt!important;white-space:nowrap}.report-ob{margin:0;page-break-inside:avoid}.report-note{margin:0;line-height:1.15}.report-pics{width:100%;table-layout:fixed;border-spacing:0;margin:0}.report-pics td{width:33.333%;vertical-align:top}.report-pics img{display:block;width:100%;height:175px;object-fit:cover}</style>`;style+=`<style>.report-pics{display:flex;gap:10px;flex-wrap:wrap}.report-pics img{width:30%;height:auto;max-height:175px;object-fit:contain}.report-subfield .report-label{text-decoration:underline}.report-remark .report-label{font-weight:bold}.report-field{margin-left:45px}.report-inline{margin-left:22px}.report-remark,.report-plain{margin-top:1.15em;margin-bottom:1.15em}.report-signature{font-style:italic;margin-top:20px}h1{text-align:center}h2{margin-top:1.15em}</style>`;let html=`<html><head><meta charset="utf-8">${style}</head><body>${reportBody()}</body></html>`;download(new Blob(['\ufeff',html],{type:'application/msword'}),exportName('doc'))}
+function backup(){download(new Blob([JSON.stringify({version:1,visits},null,0)],{type:'application/json'}),`Visite_RV_sauvegarde_${new Date().toISOString().slice(0,10)}.json`)}async function restore(e){let file=e.target.files[0];if(!file)return;try{let obj=JSON.parse(await file.text());if(!Array.isArray(obj.visits))throw Error();if(!confirm(`Importer ${obj.visits.length} visites ? Les visites de même identifiant seront remplacées.`))return;for(let v of obj.visits){if(v.id&&v.data){migrateVisit(v);await put(v)}}visits=await all();for(const v of visits){if(migrateVisit(v))await put(v)}render();notice('Sauvegarde importée')}catch(e){notice('Fichier de sauvegarde invalide')}}
+(async()=>{try{db=await openDB();visits=await all();for(const v of visits){if(migrateVisit(v))await put(v)}render()}catch(e){$('#app').innerHTML='<h1>Visite RV</h1><p>Le stockage local est indisponible. Ouvre l’application dans Safari hors navigation privée.</p>'}if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{})})();
+</script></body></html>
