@@ -122,34 +122,33 @@ function noteAndPhotos(arr){let out='';for(let o of arr){let photos=o.photos||[]
 function reportBody(){
  let d=(current.date||'').split('-');let date=d.length===3?`${d[2]}/${d[1]}/${d[0]}`:E(current.date||'—');
  let out=`<h1>Visite RV du magasin n° ${E(current.number||'—')} le ${date}</h1><p class="report-identity">Nom du magasin : ${E(current.store)}</p><p class="report-identity">Nom du RS : ${E(current.rs)}</p>`;
- const observations=(arr,label,kind)=>{
-  let html='';for(const o of arr||[]){const note=(o.note||'').trim(),photos=o.photos||[];
+ function observations(arr,label,kind){
+  let html='';for(const o of arr||[]){const note=String(o.note||'').trim(),photos=o.photos||[];
    if(note){const prefix=label?`${E(label)} : `:'Remarques : ';
     html+=`<div class="report-field ${kind||''}">${prefix}${E(note).replace(/\n/g,'<br>')}</div>`;
    }
    if(photos.length)html+=photoMarkup(photos);
   }return html;
- };
- SC.forEach((section,i)=>{
+ }
+ SC.forEach((s,i)=>{
   let sectionOut='';
-  for(const [group,items] of section.groups){
+  for(const [group,items] of s.groups){
    let groupOut='';
    if(Array.isArray(items)){
     for(const item of items){
-     groupOut+=observations(current.data[key(i,group+' / '+item)]||[],item,'report-subfield');
+     const arr=current.data[key(i,group+' / '+item)]||[];
+     // A nested item must retain its own label, even when the group shares its name.
+     groupOut+=observations(arr,item,'report-subfield');
     }
     if(!(i===2&&group==='Groupe inventaire'))groupOut+=observations(current.data[key(i,'__admin_group__'+group)]||[],'','report-group-note');
-   }else{
-    groupOut+=observations(current.data[key(i,group)]||[],group,'report-subfield');
-   }
+   }else groupOut+=observations(current.data[key(i,group)]||[],group||s.name,'report-subfield');
    if(groupOut){
-    // No repeated heading for groups without a name, or when group and only field share a label.
-    const heading=group&&!(Array.isArray(items)&&items.length===1&&items[0]===group)?`<h3>${E(group)}</h3>`:'';
-    sectionOut+=heading+groupOut;
+    if(group)sectionOut+=`<h3>${E(group)}</h3>`;
+    sectionOut+=groupOut;
    }
   }
   sectionOut+=observations(current.data[key(i,'__general__')]||[],'','report-general-note');
-  if(sectionOut)out+=`<h2>${i+1}. ${E(section.name)}</h2>`+sectionOut;
+  if(sectionOut)out+=`<h2>${E(s.name)}</h2>`+sectionOut;
  });return out;
 }
 
@@ -174,17 +173,17 @@ async function exportPDF(){
   page();
   const root=document.createElement('div');root.style.cssText='position:fixed;left:-99999px;top:0;width:700px;visibility:hidden';root.innerHTML=reportBody();document.body.appendChild(root);
   async function renderElement(el){
-   if(el.matches('h1')){gap(8);const title=el.textContent;font(28,true);const tw=ctx.measureText(title).width;if(y+40>H-margin)page();ctx.fillStyle='#2563a6';ctx.fillText(title,Math.max(leftMargin,(W-tw)/2),y);y+=40;gap(48)}
+   if(el.matches('h1')){gap(8);const title=el.textContent;font(28,true);const tw=ctx.measureText(title).width;if(y+40>H-margin)page();ctx.fillStyle='#2563a6';if(tw<=usable){ctx.fillText(title,(W-tw)/2,y);y+=40}else{line(title,28,true,'#2563a6');}gap(48)}
    else if(el.matches('h2')){gap(52);line(el.textContent,28,true,'#2563a6');gap(9)}
    else if(el.matches('h3')){gap(10);line(el.textContent,24,true,'#687789',38);gap(5)}
    else if(el.matches('h4')){gap(7);line(el.textContent,23,true,'#515e6d',76);gap(3)}
    else if(el.matches('.report-field')){
     const indent=el.matches('.report-subfield')?76:el.matches('.report-group-note')?38:38;
-    for(const part of el.innerText.split('\n'))line(part,23,false,'#111',indent);
+    for(const part of el.innerHTML.replace(/<br\s*\/?\s*>/gi,'\n').replace(/<[^>]*>/g,'').split('\n'))line(part,23,false,'#111',indent);
     gap(9);
    }
    else if(el.matches('p,.report-note')){
-    const text=el.innerText;
+    const text=el.innerHTML.replace(/<br\s*\/?\s*>/gi,'\n').replace(/<[^>]*>/g,'');
     for(const part of text.split('\n'))line(part,23,false,'#111',el.matches('.report-note')?76:0);
     gap(el.matches('.report-identity')?8:14);
    }
@@ -193,11 +192,11 @@ async function exportPDF(){
     // One large image per row; preserve original proportions, no cropping.
     for(const node of imgs){
      const im=await drawImage(node.src);if(!im)continue;
-     const maxW=usable-100,maxH=480;
+     const maxW=490,maxH=315;
      const scale=Math.min(maxW/im.width,maxH/im.height);
      const dw=im.width*scale,dh=im.height*scale;
      if(y+dh+28>H-margin)page();
-     ctx.drawImage(im,leftMargin+76,y,dw,dh);y+=dh+28;
+     ctx.drawImage(im,leftMargin+76,y,dw,dh);y+=dh+32;
     }
    }
    else {for(const child of el.children)await renderElement(child)}
