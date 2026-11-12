@@ -144,15 +144,21 @@ function reportBody(){
    for(const [group,items] of s.groups){
     let groupBody='';
     if(Array.isArray(items)){
-     for(const item of items){
-      groupBody+=content(current.data[key(i,group+' / '+item)]||[],item,'report-subfield');
+     const flat=(i===2&&group==='Groupe inventaire')||(i===10&&(group==='Contrôle des prix FDR (sondage)'||group==='Affichage fluo / vert'));
+     if(flat){
+      // Reuse the original data key so existing visits and responses remain intact.
+      const legacy=current.data[key(i,group+' / '+items[0])]||[];
+      groupBody+=content(legacy,group+' : ','report-inline');
+     }else{
+      for(const item of items)groupBody+=content(current.data[key(i,group+' / '+item)]||[],item,'report-subfield');
+      groupBody+=content(current.data[key(i,'__admin_group__'+group)]||[],'__remarks__','report-remark');
      }
-     if(!(i===2&&group==='Groupe inventaire'))groupBody+=content(current.data[key(i,'__admin_group__'+group)]||[],'__remarks__','report-remark');
     }else{
      // The subsection heading already carries the label; don't repeat it on the response line.
      groupBody+=content(current.data[key(i,group)]||[],'','report-group-value');
     }
-    if(groupBody)body+=`<h3>${E(group)}</h3>`+groupBody;
+    const flat=(i===2&&group==='Groupe inventaire')||(i===10&&(group==='Contrôle des prix FDR (sondage)'||group==='Affichage fluo / vert'));
+    if(groupBody)body+=(flat?'':`<h3>${E(group)}</h3>`)+groupBody;
    }
   }
   body+=content(current.data[key(i,'__general__')]||[],[0,13,14].includes(i)?'':'__remarks__',[0,13,14].includes(i)?'report-plain':'report-remark');
@@ -205,22 +211,24 @@ async function exportPDF(){
    else if(el.matches('h2')){
     // Exactly two blank lines before every main heading, regardless of preceding content.
     // At a fresh page, the top margin replaces the blank space.
-    const spacing=2*29;
+    const spacing=29;
     if(y>margin){if(y+spacing+40>H-margin)page();else y+=spacing}
     ensure(40);textLine(el.textContent,0,28,true,'#2563a6');y+=8;
    }
-   else if(el.matches('h3')){ensure(40);textLine(el.textContent,38,24,true,'#687789');y+=3}
+   else if(el.matches('h3')){ensure(40);textLine(el.textContent,38,24,true,'#687789')}
    else if(el.matches('.report-field')){
     const label=el.querySelector('.report-label')?.textContent||'',value=el.querySelector('.report-value')?.textContent||'';
-    const indent=el.matches('.report-subfield,.report-remark')?76:el.matches('.report-group-value')?38:76;
+    const indent=el.matches('.report-subfield,.report-remark')?76:el.matches('.report-group-value,.report-inline')?38:76;
+    if(el.matches('.report-remark,.report-plain')){ensure(29);y+=29;}
     field(label,value,indent,el.matches('.report-remark'),el.matches('.report-subfield'));
+    if(el.matches('.report-remark,.report-plain')){ensure(29);y+=29;}
    }
    else if(el.matches('.report-pics')){
     const imgs=await Promise.all([...el.querySelectorAll('img')].map(node=>drawImage(node.src)));
     const valid=imgs.filter(Boolean),cols=Math.min(3,valid.length),gap=12,available=usable-76;
-    const slot=(available-gap*(cols-1))/cols;
+    const slot=(available-gap*2)/3;
     for(let i=0;i<valid.length;i+=cols){
-     const batch=valid.slice(i,i+cols);const dimensions=batch.map(im=>{let scale=Math.min(slot/im.width,210/im.height);return [im.width*scale,im.height*scale]});
+     const batch=valid.slice(i,i+cols);const dimensions=batch.map(im=>{let scale=Math.min(slot/im.width,255/im.height);return [im.width*scale,im.height*scale]});
      const rowH=Math.max(...dimensions.map(d=>d[1]));ensure(rowH+18);
      batch.forEach((im,j)=>{const [w,h]=dimensions[j];ctx.drawImage(im,leftMargin+76+j*(slot+gap),y,w,h)});
      y+=rowH+18;
@@ -258,7 +266,7 @@ async function exportPDF(){
 
 function buildPrint(){document.title=exportName('pdf').replace(/\.pdf$/,'');$('#printRoot').innerHTML=reportBody()}
 function download(blob,name){let url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),15000)}
-function exportWord(){let style=`<style>body{font-family:Arial,sans-serif;color:#111}h1,h2{color:#2563a6}h3{color:#777}h1,h2,h3,p{margin:0;line-height:1.15}h1[style*='font-size:12pt']{font-size:12pt!important;white-space:nowrap}.report-ob{margin:0;page-break-inside:avoid}.report-note{margin:0;line-height:1.15}.report-pics{width:100%;table-layout:fixed;border-spacing:0;margin:0}.report-pics td{width:33.333%;vertical-align:top}.report-pics img{display:block;width:100%;height:175px;object-fit:cover}</style>`;style+=`<style>.report-pics{display:flex;gap:10px;flex-wrap:wrap}.report-pics img{width:30%;height:auto;max-height:175px;object-fit:contain}.report-subfield .report-label{text-decoration:underline}.report-remark .report-label{font-weight:bold}.report-field{margin-left:45px}.report-signature{font-style:italic;margin-top:20px}h1{text-align:center}h2{margin-top:2.5em}</style>`;let html=`<html><head><meta charset="utf-8">${style}</head><body>${reportBody()}</body></html>`;download(new Blob(['\ufeff',html],{type:'application/msword'}),exportName('doc'))}
+function exportWord(){let style=`<style>body{font-family:Arial,sans-serif;color:#111}h1,h2{color:#2563a6}h3{color:#777}h1,h2,h3,p{margin:0;line-height:1.15}h1[style*='font-size:12pt']{font-size:12pt!important;white-space:nowrap}.report-ob{margin:0;page-break-inside:avoid}.report-note{margin:0;line-height:1.15}.report-pics{width:100%;table-layout:fixed;border-spacing:0;margin:0}.report-pics td{width:33.333%;vertical-align:top}.report-pics img{display:block;width:100%;height:175px;object-fit:cover}</style>`;style+=`<style>.report-pics{display:flex;gap:10px;flex-wrap:wrap}.report-pics img{width:30%;height:auto;max-height:175px;object-fit:contain}.report-subfield .report-label{text-decoration:underline}.report-remark .report-label{font-weight:bold}.report-field{margin-left:45px}.report-inline{margin-left:22px}.report-remark,.report-plain{margin-top:1.15em;margin-bottom:1.15em}.report-signature{font-style:italic;margin-top:20px}h1{text-align:center}h2{margin-top:1.15em}</style>`;let html=`<html><head><meta charset="utf-8">${style}</head><body>${reportBody()}</body></html>`;download(new Blob(['\ufeff',html],{type:'application/msword'}),exportName('doc'))}
 function backup(){download(new Blob([JSON.stringify({version:1,visits},null,0)],{type:'application/json'}),`Visite_RV_sauvegarde_${new Date().toISOString().slice(0,10)}.json`)}async function restore(e){let file=e.target.files[0];if(!file)return;try{let obj=JSON.parse(await file.text());if(!Array.isArray(obj.visits))throw Error();if(!confirm(`Importer ${obj.visits.length} visites ? Les visites de même identifiant seront remplacées.`))return;for(let v of obj.visits){if(v.id&&v.data){migrateVisit(v);await put(v)}}visits=await all();for(const v of visits){if(migrateVisit(v))await put(v)}render();notice('Sauvegarde importée')}catch(e){notice('Fichier de sauvegarde invalide')}}
 (async()=>{try{db=await openDB();visits=await all();for(const v of visits){if(migrateVisit(v))await put(v)}render()}catch(e){$('#app').innerHTML='<h1>Visite RV</h1><p>Le stockage local est indisponible. Ouvre l’application dans Safari hors navigation privée.</p>'}if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{})})();
 </script></body></html>
